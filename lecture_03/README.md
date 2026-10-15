@@ -3,61 +3,59 @@
 ## Answers to Questions
 
 ### 1. Which operation changed the signal amplitude?
-The **amplitude scaling** operation in Task 1 (`scaled = 2 * measured`) changed the signal amplitude. Multiplying the signal by 2 doubled both the underlying clean signal values and the noise amplitude across all samples.
+The **amplitude scaling** operation in Task 1 (`scaled = 2 * measured`) doubled the amplitude of the measured signal. This doubled both the clean-signal component and the noise.
 
 ---
 
 ### 2. How did the five-sample delay change the signal?
-The delay shifted the entire signal to the right by 5 units along the sample index ($n$) axis. 
-- The overall shape, frequency, and amplitude of the waveform remained unchanged.
-- The signal array was extended in length by 5 samples due to the prepended zeros representing the initial zero-state response.
+The delay shifted the signal 5 samples to the right along the sample-index axis. Its shape, frequency, and amplitude remained unchanged. The code prepended five zeros, so the delayed sequence is five samples longer than the original.
 
 ---
 
 ### 3. What does the impulse response $h[n]$ represent?
-The impulse response $h[n]$ is the system's output when the input is a discrete unit impulse function $\delta[n]$ (a single spike of amplitude 1 at $n = 0$ and 0 elsewhere).
+The impulse response $h[n]$ is a system’s output when its input is the unit impulse $\delta[n]$, which is 1 at $n=0$ and 0 elsewhere.
 
 ---
 
 ### 4. How did convolution change the noisy signal?
-Convolution with the moving-average impulse response acted as a low-pass filter. It averaged neighboring sample values together, which smoothed out the high-frequency random noise and brought the signal closer to the underlying sine wave.
+Convolution with the moving-average impulse response smoothed the signal by averaging neighboring samples. This reduced rapid noise fluctuations and generally brought the result closer to the underlying sine wave. Smoothing also attenuates some of the signal’s amplitude.
 
 ---
 
 ### 5. What differences did you observe between the 5-point and 15-point filters?
-- **Smoothness:** The 15-point filter produced a noticeably smoother line than the 5-point filter because it averages over a wider window.
-- **Amplitude Reduction (Attenuation):** The 15-point filter attenuated (flattened) the peak and trough amplitudes of the underlying sine wave significantly more than the 5-point filter.
-- **Phase Shift / Edge Effects:** The 15-point filter introduced more boundary distortion near the edges ($n \approx 0$ and $n \approx 100$).
+- **Smoothness:** The 15-point filter produced a smoother signal because it averages over a wider window.
+- **Amplitude reduction:** The 15-point filter attenuated the sine wave’s peaks and troughs more than the 5-point filter.
+- **Boundary effects:** The 15-point filter showed greater distortion near the signal boundaries. The code uses `conv(..., 'same')`, which introduces boundary effects because samples outside the signal are effectively treated as zero.
+- **Phase:** Both filters are symmetric, centered moving averages, so they do not introduce a phase shift in the interior of the signal.
 
 ---
 
 ### 6. Which filter removed more noise?
-The **15-point filter** removed more noise. By taking the average across 15 samples instead of 5, high-frequency random variations were cancelled out more effectively.
+The **15-point filter** smoothed out more rapid noise variation because it averages over more samples. However, it also attenuated the underlying sine wave more.
 
 ---
 
 ### 7. Did the longer filter remove or distort useful signal information?
-**Yes.** The 15-point filter caused noticeable distortion:
-1. It suppressed the peak amplitudes of the original sine wave because the window size (15 samples) covers a significant fraction of the sine wave's period (20 samples for $\sin(0.1\pi n)$).
-2. It flattened out sharp transitions, causing a loss of signal dynamics and peak accuracy.
+**Yes.** The 15-point filter attenuated the sine wave’s peaks and troughs. The clean signal has a period of 20 samples, so a 15-sample window spans 75% of a cycle. This wide window averages together substantially different parts of the waveform.
 
 ---
 
 ### 8. Which filter would you recommend for this signal? Explain your decision.
-I recommend the **5-point moving-average filter**. 
-- **Reasoning:** The period of the clean sine wave is $T = \frac{2\pi}{0.1\pi} = 20$ samples. 
-- A 5-point filter window spans $25\%$ of a cycle, providing a good trade-off between reducing noise fluctuations and preserving the true peak amplitudes of the sine wave. 
-- The 15-point filter spans $75\%$ of the signal period, which severely clips the wave's peaks and introduces excessive distortion.
+I recommend the **5-point moving-average filter** as a compromise between noise reduction and preservation of the sine wave.
+
+The clean signal’s period is
+$T = \frac{2\pi}{0.1\pi} = 20$ samples.
+A 5-sample window is shorter than the 15-sample window, so it preserves more of the sine wave’s amplitude while still smoothing some noise.
 
 ---
 
 ### 9. Give one real engineering application for moving-average filtering.
-**ECG (Electrocardiogram) Signal Processing:** In biomedical engineering, moving-average filters are routinely used to remove high-frequency muscular noise or power-line interference ($50\text{ Hz} / 60\text{ Hz}$) from raw ECG heart-rate signals before automatic peak detection algorithms analyze the heartbeat.
+**Signal smoothing in biomedical measurement:** A short moving-average filter can smooth high-frequency fluctuations in measurements such as ECG signals before further analysis. The window must be chosen carefully to avoid distorting important waveform features. A moving average is not usually the preferred method for removing 50/60 Hz power-line interference; a notch filter is more appropriate for that purpose.
 
 ## AI Usage
 
 Tool used: Gemini 3.5
 
-How I used it: I asked to create README code from the awnsers I gave, correct spelling mistakes and verify my findings with sources. Asked how to autosave figures to pngs and comment the code.
+How I used it: I asked it to help create the README from my answers, correct spelling mistakes, verify my findings with sources, explain how to save figures as PNG files, and comment the code.
 
-What I verified or changed: I verified the sources and proof read the text after RAEDME code generations and comments added. 
+What I verified or changed: I reviewed the generated text and comments, checked the sources, and corrected the answers.
