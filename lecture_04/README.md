@@ -21,3 +21,9 @@ Vector b holds numerator coefficients ordered by decreasing powers of z. The ele
 
 ### Task 6: Modified System H(z) = 0.8 + 0.2z^-1
 Setting b = [0.8 0.2] gives the current input sample x[n] greater influence on the output with an 80% weight, compared to a 20% weight for the previous sample x[n-1].
+
+
+![First Figure](firstfig.jpg)
+![Output Samples](outputsamples.png)
+![Output Samples 2](outputsamples_2.png)
+![Calculations](hand_calculations.jpg)
